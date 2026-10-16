@@ -5,6 +5,7 @@ It renders under `StrictMode`, so the development server also checks that a moun
 
 - **Place another order** gives the page a new `order_id`, which starts a new flow. Use it to check the single-page-app case.
 - **Unmount UptickFlow** removes the component, then mounts it again.
+- **Start on click** waits for a **See your rewards** button before rendering `UptickFlow`, and calls `preloadUptick` when it's switched on so the script is already loaded by the click. Each new order waits for the button again. `?start=click` opens the page with it on.
 - **Callback events** lists every event the component reports, newest first.
 
 Until the package's first npm release, the example installs it from a `react-web-sdk` checkout next to this repository (`file:../../react-web-sdk`), so changes to the SDK's `src/` show up on reload.
