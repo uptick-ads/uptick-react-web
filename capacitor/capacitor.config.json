@@ -1,0 +1,5 @@
+{
+  "appId": "com.uptick.examples.reactweb",
+  "appName": "Uptick Capacitor",
+  "webDir": "dist"
+}
