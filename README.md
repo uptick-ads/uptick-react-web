@@ -24,14 +24,19 @@ import { UptickFlow } from "@uptick-ads/react-web-sdk";
 ## Requirements
 
 - Node 22 ([mise](https://mise.jdx.dev) picks it up from `mise.toml`)
-- The SDK checked out next to this repository as `../react-web-sdk`. Until the package's first npm release, both apps install it from there (`file:../../react-web-sdk`), so changes to the SDK's `src/` show up on reload
+
+Both apps install `@uptick-ads/react-web-sdk` from npm. Follow each app's README.
+
+## Working on the SDK
+
+To try changes to the SDK in an example, check out [react-web-sdk](https://github.com/uptick-ads/react-web-sdk) next to this repository and install it in place of the published package:
 
 ```
-git clone https://github.com/uptick-ads/react-web-sdk.git
-git clone https://github.com/uptick-ads/uptick-react-web.git
+cd vite   # or capacitor
+npm install ../../react-web-sdk
 ```
 
-Then follow each app's README.
+Changes to the SDK's `src/` then show up on reload. Don't commit the resulting `file:` change to `package.json` or `package-lock.json`; `npm install @uptick-ads/react-web-sdk@latest` goes back to the published package.
 
 ## Choosing an integration
 

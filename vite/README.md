@@ -8,7 +8,7 @@ It renders under `StrictMode`, so the development server also checks that a moun
 - **Start on click** waits for a **See your rewards** button before rendering `UptickFlow`, and calls `preloadUptick` when it's switched on so the script is already loaded by the click. Each new order waits for the button again. `?start=click` opens the page with it on.
 - **Callback events** lists every event the component reports, newest first.
 
-Until the package's first npm release, the example installs it from a `react-web-sdk` checkout next to this repository (`file:../../react-web-sdk`), so changes to the SDK's `src/` show up on reload.
+The example installs the package from npm. To run it against an SDK checkout instead, see [Working on the SDK](../README.md#working-on-the-sdk).
 
 ## Run against production
 
