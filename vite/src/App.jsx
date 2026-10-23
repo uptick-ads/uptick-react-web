@@ -1,7 +1,7 @@
-import { useCallback, useState } from "react";
-import { UptickFlow, version } from "@uptick-ads/react-web-sdk";
+import { useCallback, useEffect, useState } from "react";
+import { UptickFlow, preloadUptick, version } from "@uptick-ads/react-web-sdk";
 
-// Query parameters (?id=&placement=&host=) override the .env values for a single session.
+// Query parameters (?id=&placement=&host=) override the .env values for a single session; ?start=click starts with "Start on click" on.
 const query = new URLSearchParams(window.location.search);
 const config = {
   integrationId: query.get("id") || import.meta.env.VITE_UPTICK_INTEGRATION_ID,
@@ -34,10 +34,31 @@ export default function App() {
   const [order, setOrder] = useState(newOrder);
   const [mounted, setMounted] = useState(true);
   const [events, setEvents] = useState([]);
+  // With "Start on click" on, the flow starts from the "See your rewards" button instead of on page load, and each new order waits for the button again.
+  const [startOnClick, setStartOnClick] = useState(query.get("start") === "click");
+  const [started, setStarted] = useState(false);
 
   const log = useCallback((event, data) => {
     setEvents((list) => [{ at: new Date().toLocaleTimeString(), event, data }, ...list].slice(0, 40));
   }, []);
+
+  // Loads the script while the page waits for the click, so the flow starts without waiting on the download.
+  // StrictMode runs this twice in development; the script still loads once, and only the second run logs.
+  useEffect(() => {
+    if (!startOnClick || !config.integrationId) return;
+    let active = true;
+    preloadUptick({ integrationId: config.integrationId, host: config.host }).then((loaded) => {
+      if (active) log("preloadUptick", { loaded });
+    });
+    return () => {
+      active = false;
+    };
+  }, [startOnClick, log]);
+
+  const placeOrder = () => {
+    setOrder(newOrder());
+    setStarted(false);
+  };
 
   if (!config.integrationId) {
     return (
@@ -73,7 +94,13 @@ export default function App() {
         </dl>
       </section>
 
-      {mounted && (
+      {mounted && startOnClick && !started && (
+        <div className="actions">
+          <button onClick={() => setStarted(true)}>See your rewards</button>
+        </div>
+      )}
+
+      {mounted && (!startOnClick || started) && (
         <UptickFlow
           integrationId={config.integrationId}
           placement={config.placement}
@@ -89,10 +116,21 @@ export default function App() {
       )}
 
       <div className="actions">
-        <button onClick={() => setOrder(newOrder())}>Place another order</button>
+        <button onClick={placeOrder}>Place another order</button>
         <button className="secondary" onClick={() => setMounted((value) => !value)}>
           {mounted ? "Unmount UptickFlow" : "Mount UptickFlow"}
         </button>
+        <label className="toggle">
+          <input
+            type="checkbox"
+            checked={startOnClick}
+            onChange={(e) => {
+              setStartOnClick(e.target.checked);
+              setStarted(false);
+            }}
+          />{" "}
+          Start on click
+        </label>
       </div>
 
       <section className="events">

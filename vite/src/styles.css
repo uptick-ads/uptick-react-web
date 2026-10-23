@@ -101,6 +101,13 @@ button {
   cursor: pointer;
 }
 
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
 button.secondary {
   background: transparent;
   color: var(--accent);
